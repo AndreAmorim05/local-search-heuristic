@@ -217,13 +217,6 @@ class Optimizer:
 
         while len(_sorted) > 0:
             candidate = _sorted.pop(0)
-            if candidate.risk == Risk.LOW:
-                current_solution = self.insertion(current_solution, candidate)
-
-            elif candidate.risk == Risk.MEDIUM:
-                current_solution = self.insertion(current_solution, candidate)
-
-            else:
-                current_solution = self.insertion(current_solution, candidate)
+            current_solution = self.insertion(current_solution, candidate)
 
         return current_solution
