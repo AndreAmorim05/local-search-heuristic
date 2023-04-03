@@ -1,0 +1,14 @@
+{
+    "builds": [
+        {
+            "src": "optimal/main.py",
+            "use": "@vercel/python"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "optimal/main.py"
+        }
+    ]
+}
