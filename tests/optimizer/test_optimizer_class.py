@@ -95,7 +95,20 @@ def test_optimizer_rises_error_if_problem_is_infeasible_by_violate_budget_ceilin
         mock_infeasible_data["investiments"][1],
         mock_infeasible_data["investiments"][3],
         mock_infeasible_data["investiments"][5],
-     ]
+    ]
+
+    assert solution == expected_solution
+
+def test_optimizer_score_rises_error_if_problem_is_infeasible_by_violate_budget_ceiling(
+        mock_infeasible_data
+):
+    optimizer = Optimizer(**mock_infeasible_data)
+    solution = optimizer.optimize()
+    expected_solution = [
+        mock_infeasible_data["investiments"][0],
+        mock_infeasible_data["investiments"][2],
+        mock_infeasible_data["investiments"][4],
+    ]
 
     assert solution == expected_solution
 
@@ -108,3 +121,30 @@ def test_optimizer_respects_the_budget_ceiling(mock_not_infeasible_data):
     assert str(exc.value) == "There is no feasible solution. Impossible to choose \
                      the minimum number of investments per class without \
                      exceed the budget ceiling"
+
+
+def test_optimizer_score_respects_the_budget_ceiling(mock_not_infeasible_data):
+    optimizer = Optimizer(**mock_not_infeasible_data)
+    with pytest.raises(ValueError) as exc:
+        optimizer.optimize()
+
+    assert str(exc.value) == "There is no feasible solution. Impossible to choose \
+                     the minimum number of investments per class without \
+                     exceed the budget ceiling"
+
+
+def test_if_sorted_candidates_function_sorts_data(mock_infeasible_data):
+    optimizer = Optimizer(**mock_infeasible_data)
+    solution = optimizer.optimize(scored=False)
+    expected_sort = [
+        mock_infeasible_data["investiments"][0],
+        mock_infeasible_data["investiments"][4],
+        mock_infeasible_data["investiments"][2],
+    ]
+    assert expected_sort == optimizer.sorted_candidates(solution)
+
+
+def test_if_scan_retuns_correct_values(mock_infeasible_data):
+    optimizer = Optimizer(**mock_infeasible_data)
+    solution = optimizer.optimize(scored=False)
+    assert optimizer.scan(solution, target='cost') == 33

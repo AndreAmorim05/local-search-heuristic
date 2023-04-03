@@ -121,7 +121,7 @@ class Optimizer:
         return selected
 
 
-    def build_scored_solution(self):
+    def build_scored_solution(self) -> list[Investiment]:
         _sorted = self.sorted_candidates([], target='score')
         selected = list()
 
@@ -159,7 +159,7 @@ class Optimizer:
         return selected
 
 
-    def mutate(self, data, candidate):
+    def mutate(self, data, candidate) -> list[Investiment]:
         mutated_data = data
         risc = candidate.risk
         filtered_data = filter(lambda x: x.risk == risc, mutated_data)
@@ -182,7 +182,7 @@ class Optimizer:
                 return data
 
 
-    def insertion(self, current_solution, candidate):
+    def insertion(self, current_solution, candidate) -> list[Investiment]:
         base_data = current_solution
 
         if self.scan(base_data, 'risk', candidate.risk, 'cost') + \
@@ -197,12 +197,16 @@ class Optimizer:
         return base_data
 
 
-    def optimize(self, scored=True, iteration_number: int = 10):
+    def optimize(self, scored=True, iteration_number: int = 10)\
+             -> list[Investiment]:
         current_solution = list()
         _sorted = list()
 
         if scored:
-            current_solution = self.build_scored_solution()
+            try:
+                current_solution = self.build_scored_solution()
+            except:
+                current_solution = self.build_initial_solution()
             _sorted = self.sorted_candidates(current_solution, target='score')
         else:
             current_solution = self.build_initial_solution()
